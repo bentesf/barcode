@@ -32,9 +32,14 @@ dependencies:
   automatic_animated_list: ^1.1.0
   another_flushbar: ^1.12.29
   anchor_scroll_controller: ^0.4.1
-  path: ^1.8.2
+  path: ^1.8.1
   flutter_sticky_header: ^0.6.4
   modal_bottom_sheet: ^2.1.2
+  csv: ^5.0.1
+  file_picker: ^5.2.1
+  permission_handler: ^10.1.0
+  path_provider: ^2.0.2
+  flutter_speed_dial: ^6.2.0
 
 dev_dependencies:
   flutter_test:
