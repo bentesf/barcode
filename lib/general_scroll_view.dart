@@ -35,6 +35,7 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
     super.initState();
     listaCodigos = List<List<dynamic>>.empty(growable: true);
     blocoCodigo = List<List<dynamic>>.empty(growable: true);
+    contPage = 0;
     _scrollController = AnchorScrollController(
       onIndexChanged: (index, userScroll) {
         if (userScroll) {
@@ -69,6 +70,10 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Center(
+              child: Container(
+            child: Text("Pagina: " + contPage.toString()),
+          )),
           Expanded(
               child: ListView.builder(
                   controller: _scrollController,
@@ -151,9 +156,24 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
         children: [
           // FAB 1
           SpeedDialChild(
-            child: Icon(Icons.assignment_turned_in),
+            child: isLoading
+                ? CircularProgressIndicator(
+                    color: Colors.black,
+                  )
+                : const Icon(Icons.add),
             backgroundColor: Color.fromARGB(255, 43, 118, 231),
-            onTap: () {/* do anything */},
+            onTap: () {
+              setState(() {
+                isLoading = true;
+              });
+              Future.delayed(const Duration(seconds: 3), () {
+                remlist(blocoCodigo.length);
+
+                setState(() {
+                  isLoading = false;
+                });
+              });
+            },
             label: 'Lista Anterior',
             labelStyle: TextStyle(
                 fontWeight: FontWeight.w500,
@@ -163,11 +183,22 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
           ),
           // FAB 2
           SpeedDialChild(
-            child: Icon(Icons.assignment_turned_in),
+            child: isLoading
+                ? CircularProgressIndicator(
+                    color: Colors.black,
+                  )
+                : const Icon(Icons.add),
             backgroundColor: Color.fromARGB(255, 43, 118, 231),
             onTap: () {
               setState(() {
-                // _counter = 0;
+                isLoading = true;
+              });
+              Future.delayed(const Duration(seconds: 3), () {
+                addlist(blocoCodigo.length);
+
+                setState(() {
+                  isLoading = false;
+                });
               });
             },
             label: 'Nova Lista',
@@ -179,26 +210,6 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
           )
         ],
       ),
-      // FloatingActionButton(
-      //       elevation: 0,
-      //       onPressed: () {
-      //         setState(() {
-      //           isLoading = true;
-      //         });
-      //         Future.delayed(const Duration(seconds: 3), () {
-      //           addlist(blocoCodigo.length);
-
-      //           setState(() {
-      //             isLoading = false;
-      //           });
-      //         });
-      //       },
-      //       child: isLoading
-      //           ? CircularProgressIndicator(
-      //               color: Colors.black,
-      //             )
-      //           : const Icon(Icons.add),
-      //     ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       bottomNavigationBar: this._buildBottomAppBar(context),
     );
@@ -260,6 +271,7 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
             : null,
       ))
           ?.files;
+      // ignore: unused_catch_clause
     } on PlatformException catch (e) {
     } catch (ex) {}
     if (!mounted) return;
@@ -272,6 +284,9 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
   addlist(int tan) {
     late List<List<dynamic>> codebar2;
     codebar2 = List<List<dynamic>>.empty(growable: true);
+    contPage = contPage + 1;
+    blocoCodigo = [];
+    tan = contPage * tan;
     if (listaCodigos.isNotEmpty) {
       for (int i = tan; i < tan + 10; i++) {
         listaCodigos[i][0] = listaCodigos[i][0].toString();
@@ -282,11 +297,36 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
         for (int i = 0; i < 10; i++) {
           blocoCodigo.add(codebar2[i]);
         }
-        if (tan > tanAnt) {
-          contPage++;
-        } else {
-          contPage--;
+        // if (tan > tanAnt) {
+        contPage++;
+        // } else {
+        //   contPage--;
+        // }
+      });
+    }
+  }
+
+  remlist(int tan) {
+    late List<List<dynamic>> codebar2;
+    codebar2 = List<List<dynamic>>.empty(growable: true);
+    contPage = contPage - 1;
+    blocoCodigo = [];
+    tan = contPage * tan;
+    if (listaCodigos.isNotEmpty) {
+      for (int i = tan; i < tan + 10; i++) {
+        listaCodigos[i][0] = listaCodigos[i][0].toString();
+        codebar2.add(listaCodigos[i]);
+      }
+
+      setState(() {
+        for (int i = 0; i < 10; i++) {
+          blocoCodigo.add(codebar2[i]);
         }
+        // if (tan > tanAnt) {
+        //   contPage++;
+        // } else {
+        contPage = contPage - 1;
+        // }
       });
     }
   }
