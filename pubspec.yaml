@@ -40,6 +40,7 @@ dependencies:
   permission_handler: ^10.1.0
   path_provider: ^2.0.2
   flutter_speed_dial: ^6.2.0
+  rflutter_alert: ^2.0.4
 
 dev_dependencies:
   flutter_test:
