@@ -42,7 +42,7 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
     _scrollController = AnchorScrollController(
       onIndexChanged: (index, userScroll) {
         if (userScroll) {
-          _tabController?.animateTo(index);
+          _tabController?.animateTo(index + 1);
         }
       },
     );
@@ -104,7 +104,7 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
                       ),
                       onTap: (index) {
                         _scrollController.scrollToIndex(
-                            index: index, scrollSpeed: 0.1);
+                            index: index, scrollSpeed: 2);
                       });
                 }),
               ),
@@ -112,35 +112,30 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
           ),
           Expanded(
               child: ListView.builder(
-                  controller: _scrollController,
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemCount: blocoCodigo.length,
-                  itemBuilder: (context, index) => AnchorItemWrapper(
-                      index: index,
-                      controller: _scrollController,
-                      child: Container(
-                        alignment: Alignment.topRight,
-                        decoration: BoxDecoration(
-                          // color: Colors.red,
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(25),
-                          child: Center(
-                              child: Container(
-                            // color: Colors.blue,
-                            height: 160,
-                            width: 300,
-                            margin: EdgeInsets.fromLTRB(40, 60, 40, 60),
-                            child: SfBarcodeGenerator(
-                              value: blocoCodigo[index][0],
-                              symbology: Codabar(module: 6),
-                              showValue: true,
-                            ),
-                          )),
-                        ),
-                      )))),
+            controller: _scrollController,
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            itemCount: blocoCodigo.length,
+            itemBuilder: (context, index) => AnchorItemWrapper(
+              index: index,
+              controller: _scrollController,
+              child: Center(
+                  child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                height: 200,
+                width: 380,
+                margin: EdgeInsets.fromLTRB(5, 60, 0, 60),
+                child: SfBarcodeGenerator(
+                  value: blocoCodigo[index][0],
+                  symbology: Code128(module: 2),
+                  showValue: true,
+                ),
+              )),
+            ),
+          )),
+          // )),
           IconButton(
               alignment: Alignment.center,
               padding: const EdgeInsets.fromLTRB(0, 0, 0, 50),
@@ -152,13 +147,9 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
               onPressed: () {
                 _scrollController.scrollToIndex(
                     index: tanBloc - 1, scrollSpeed: 0.1);
-                // setState(() {
                 _tabController?.animateTo(0,
                     duration: Duration(seconds: 6 * (tanBloc - 1)));
-                // });
-              }
-              // Fluttertoast.showToast(msg: 'Dummy search action.'),
-              ),
+              }),
           Center(
               child: Container(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 30),
@@ -253,9 +244,9 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
               setState(() {
                 isLoading = true;
               });
-              Future.delayed(const Duration(seconds: 3), () {
+              Future.delayed(const Duration(seconds: 1), () {
                 _onAlertWithCustomContentPressed(context);
-
+                _showSnack("Adicionado");
                 setState(() {
                   isLoading = false;
                 });
@@ -270,35 +261,22 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
           )
         ],
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       bottomNavigationBar: this._buildBottomAppBar(context),
     );
   }
 
   BottomAppBar _buildBottomAppBar(BuildContext context) {
     return BottomAppBar(
-      // shape: this._isBottomBarNotched ? const CircularNotchedRectangle() : null,
       color: Theme.of(context).primaryColor,
       child: Row(
         children: <Widget>[
           IconButton(
               alignment: Alignment.centerRight,
-              // padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
               icon: const Icon(
                 Icons.more_vert,
                 color: Colors.blue,
               ),
-              onPressed: () {}
-              //=> Fluttertoast.showToast(msg: 'Dummy menu action.'),
-              ),
-          // Text(
-          //   "BLOCO: " + contPage.toString(),
-          //   style: TextStyle(
-          //       fontWeight: FontWeight.w500,
-          //       color: Colors.black,
-          //       fontSize: 16.0),
-          //   textAlign: TextAlign.right,
-          // ),
+              onPressed: () {}),
         ],
       ),
     );
@@ -332,14 +310,13 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
     if (!mounted) return;
     setState(() {
       openFile(_paths![0].path);
-      _showSnack();
+      _showSnack("Concluido!");
     });
   }
 
   addlist(int tan) {
     late List<List<dynamic>> codebar2;
     codebar2 = List<List<dynamic>>.empty(growable: true);
-    // contPage = contPage + 1;
     blocoCodigo = [];
     if (contPage == 0) {
       tan = 0;
@@ -386,8 +363,6 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
         }
         contPage = contPage;
       });
-    } else {
-      // _showBloc();
     }
   }
 
@@ -397,12 +372,6 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
         title: "Quantidade",
         content: Column(
           children: <Widget>[
-            // TextField(
-            //   decoration: InputDecoration(
-            //     icon: Icon(Icons.account_circle),
-            //     labelText: 'Username',
-            //   ),
-            // ),
             TextField(
               controller: ctrlSenha,
               keyboardType: TextInputType.number,
@@ -417,9 +386,7 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
         buttons: [
           DialogButton(
             onPressed: () {
-              // setState(() {
               tanBloc = int.parse(ctrlSenha.text);
-              // });
               Navigator.pop(context);
             },
             child: Text(
@@ -430,10 +397,10 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
         ]).show();
   }
 
-  void _showSnack() =>
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  void _showSnack(String mensage) =>
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
-          "Concluido!",
+          mensage,
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -447,7 +414,6 @@ class _GeneralScrollViewWidgetState extends State<GeneralScrollViewWidget> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
           mensager,
-          // "Sem quantidade Definida!",
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,

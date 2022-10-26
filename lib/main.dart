@@ -1,3 +1,4 @@
+import 'package:barcode_generator/image.dart';
 import 'package:flutter/material.dart';
 import 'general_scroll_view.dart';
 
@@ -41,8 +42,18 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 20,
             ),
             Center(
+              child: Image.asset(
+                AppImages.teste2,
+                // width: 200,
+                height: 120,
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Center(
               child: Material(
-                elevation: 0,
+                elevation: 20,
                 color: Color.fromARGB(255, 43, 118, 231),
                 borderRadius: BorderRadius.circular(20),
                 child: MaterialButton(
@@ -53,8 +64,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       return GeneralScrollViewWidget();
                     }));
                   },
-                  minWidth: 200,
-                  height: 70,
+                  minWidth: 190,
+                  height: 50,
                   child: Text(
                     'Iniciar',
                     style: TextStyle(
